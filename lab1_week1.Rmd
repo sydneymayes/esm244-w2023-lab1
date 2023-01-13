@@ -14,5 +14,26 @@ library(sf)
 library(tmap)
 ```
 
+### Read in the data
+
+```{r}
+sf_trees <- read_csv(here('data', 'sf_trees', 'sf_trees.csv'))
+# read.csv is the built in function; read_csv is an improved version from the tidyverse, has extra functionality and is faster
+# summary(sf_trees); names(sf_trees)
+# sf_trees %>% group_by(legal_status) %>% summarize(tree_count=n())
+top_5_status <- sf_trees %>% 
+  group_by(legal_status) %>% 
+  summarize(tree_count = n()) %>% 
+  slice_max(tree_count, n = 5) %>% 
+  arrange(-tree_count)
+
+ggplot(data = top_5_status, aes(x = fct_reorder(legal_status, tree_count),
+                                y = tree_count)) +
+  geom_col() +
+  labs(y = 'Tree count', x = 'Legal Status') +
+  coord_flip() +
+  theme_minimal()
+# ggplot is more general than ggpubr 
+```
 
 
