@@ -34,6 +34,35 @@ ggplot(data = top_5_status, aes(x = fct_reorder(legal_status, tree_count),
   coord_flip() +
   theme_minimal()
 # ggplot is more general than ggpubr 
+
+
 ```
+### Keep observations where legal status is 'Permitted Site' and caretaker is 'MTA'
+```{r}
+permitted_mta <- sf_trees %>% 
+  filter(legal_status == "Permitted Site" & caretaker == "MTA")
+# == means matches. single equals sign assigns a value
+```
+
+### Keep Blackwood acacia trees, only legal_status, latitute, longitude columns
+```{r}
+blackwood_acacia <- sf_trees %>% 
+  filter(str_detect(species, "Blackwood Acacia")) %>% 
+  select(legal_status, date, latitude, longitude)
+
+### make a plot of SF acacia
+ggplot(data = blackwood_acacia, aes(x = longitude, y = latitude)) +
+  geom_point()
+```
+### Use tidyr::separate() to separate one column into multiple, and tidyr::unite() to rejoin 
+```{r}
+sf_trees_sep <- sf_trees %>% 
+  separate(species, into = c('spp_scientific', 'spp_common'), sep = ' :: ')
+
+sf_trees_unite <- sf_trees %>% 
+  unite("id_status", tree_id:species, sep = '_NEW_')
+```
+
+
 
 
